@@ -3,12 +3,13 @@
 ## Power Query Decisions
 
 - Imported the Telco Customer Churn CSV file into Power BI.
-- Set the data type for each column in Power Query.
-- `TotalCharges` was imported as text. There were 11 blank values for customers with 0 months of tenure, so I replaced those blanks with 0 before converting the column to a number.
+- Set an explicit data type for each column in Power Query.
+- `TotalCharges` was imported as text. There were 11 blank values for customers with 0 months of tenure, so I replaced those blanks with 0 before converting the column to a number. This keeps those customers in the analysis instead of removing them.
 - `MonthlyCharges` was converted to a number using the `en-US` locale so that decimal values such as 29.85 were interpreted correctly.
 - Created `TenureBand` with four groups: 0-12, 13-24, 25-48, and 49+ months.
 - Calculated the first and third quartiles of `MonthlyCharges` as 35.5 and 89.85, then created `ChargeBand` with Low, Medium, and High groups.
 - Created `ChurnFlag` as a numeric column where Yes = 1 and No = 0.
+- The Power Query applied steps were kept in a logical order and named clearly.
 
 ## DAX Measures
 
@@ -30,10 +31,10 @@ The report page contains:
 
 - Total Customers: 7,043
 - Churn Rate: 26.54%
-- Monthly Revenue at Risk: approximately 139.13K
-- Average Monthly Charges: 64.76
+- Monthly Revenue at Risk: approximately 139.13K USD
+- Average Monthly Charges: 64.76 USD
 
-The report also includes churn rate charts by:
+The report includes churn rate charts by:
 
 - Contract
 - InternetService
@@ -46,37 +47,42 @@ Slicers were added for:
 - InternetService
 - TenureBand
 
-Cross-filtering was tested by selecting a value in the Contract slicer and checking that the other visuals changed accordingly.
+Cross-filtering was tested by selecting a value in the Contract slicer and confirming that the other visuals changed accordingly.
+
+The report was created using Power BI Desktop on Windows.
 
 ## Segment Analysis
 
-The following segments showed relatively high churn rates with meaningful customer volumes:
+The dashboard shows several segments with relatively high churn rates and meaningful customer volumes:
 
-- Month-to-month contract: 3,875 customers, 42.71% churn rate.
-- Fiber optic internet service: 3,096 customers, 41.89% churn rate.
-- Electronic check payment method: 2,365 customers, 45.29% churn rate.
-- 0-12 months tenure: 2,186 customers, 47.44% churn rate.
+- 0-12 months: 2,186 customers, 47.44% churn.
+- Electronic check: 2,365 customers, 45.29% churn.
+- Month-to-month contract: 3,875 customers, 42.71% churn.
+- Fiber optic internet service: 3,096 customers, 41.89% churn.
 
-For the main retention analysis, two segments were selected based on both churn rate and customer volume:
+For the main retention analysis, the two segments selected based on both churn rate and meaningful customer volume are:
 
-1. Month-to-month customers — 3,875 customers with a 42.71% churn rate.
-2. Customers with 0-12 months of tenure — 2,186 customers with a 47.44% churn rate.
+1. **0-12 months:** 2,186 customers with a 47.44% churn rate.
+2. **Electronic check:** 2,365 customers with a 45.29% churn rate.
 
-These segments have relatively high churn and also represent a meaningful number of customers, so they are more useful for retention analysis than very small groups.
+These segments combine relatively high churn rates with a substantial number of customers, making them more useful for retention analysis than very small groups.
 
-A 100% churn rate in a group of only 3 customers should not automatically be treated as a major retention problem. The percentage is high, but the group is too small to have the same business impact as a larger segment with a high churn rate.
+A 100% churn rate in a group of only 3 customers should not automatically be treated as a major retention problem. Although the percentage is high, the sample is too small to represent the same business impact or provide as reliable a basis for a retention action as a larger segment.
+
+Month-to-month contracts and fiber optic customers also show high churn rates and meaningful customer volumes, so they are considered important areas for further retention analysis.
 
 ## Retention Recommendations
 
-1. **Focus on early-stage customers:** Introduce an onboarding and early-retention program during the first 12 months, with check-ins, service guidance, and targeted offers before customers become likely to churn.
+1. **Focus on early-stage customers:** Introduce an onboarding and early-retention program during the first 12 months, including regular check-ins, service guidance, and targeted offers before customers become more likely to churn.
 
-2. **Reduce month-to-month churn:** Give month-to-month customers incentives to move to longer-term contracts, such as discounts or additional benefits for switching to one-year or two-year plans.
+2. **Address high churn among electronic-check customers:** Investigate the reasons for churn among customers using electronic check and test targeted retention actions. This segment should also be analyzed by contract type and tenure to identify more specific patterns.
 
-3. **Target high-risk payment and service combinations:** Pay special attention to customers using electronic check and customers with fiber optic service. Analyze these groups together with contract type and tenure to identify targeted retention offers instead of applying the same action to all customers.
+3. **Reduce month-to-month and fiber-related churn:** Analyze month-to-month customers and fiber optic customers together with tenure and payment method, then use the findings to develop targeted retention offers or contract-conversion incentives.
 
 ## Technical Notes
 
-- Data cleaning and transformation were performed in Power Query rather than Python.
+- All data cleaning and transformation were performed in Power Query rather than Python or Excel before importing the data.
 - DAX measures use `COUNTROWS`, `CALCULATE`, `AVERAGE`, `SUM`, and `DIVIDE`.
 - Churn rate is implemented as an explicit DAX measure rather than a calculated column.
-- The report was created in Power BI Desktop on Windows.
+- The report uses Power BI Desktop on Windows.
+- The dashboard was designed as a single-page interactive report with KPI cards, churn-rate visuals, and slicers.
