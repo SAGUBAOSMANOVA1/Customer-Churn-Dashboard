@@ -15,11 +15,11 @@
 
 The following measures were created explicitly in DAX:
 
-- `Total Customers = COUNTROWS(Telco)`
-- `Churned Customers = CALCULATE([Total Customers], Telco[Churn] = "Yes")`
+- `Total Customers = COUNTROWS(...)`
+- `Churned Customers = CALCULATE([Total Customers], ...[Churn] = "Yes")`
 - `Churn Rate % = DIVIDE([Churned Customers], [Total Customers])`
-- `Avg Monthly Charges = AVERAGE(Telco[MonthlyCharges])`
-- `Monthly Revenue at Risk = CALCULATE(SUM(Telco[MonthlyCharges]), Telco[Churn] = "Yes")`
+- `Avg Monthly Charges = AVERAGE(...[MonthlyCharges])`
+- `Monthly Revenue at Risk = CALCULATE(SUM(...[MonthlyCharges]), ...[Churn] = "Yes")`
 
 `DIVIDE` is used instead of `/` so that a zero denominator returns a blank value instead of causing a division-by-zero error.
 
@@ -27,7 +27,7 @@ The `Churn Rate %` measure is calculated dynamically, so it changes correctly wh
 
 ## Dashboard
 
-The report page contains:
+The report contains:
 
 - Total Customers: 7,043
 - Churn Rate: 26.54%
@@ -48,6 +48,14 @@ Slicers were added for:
 - TenureBand
 
 Cross-filtering was tested by selecting a value in the Contract slicer and confirming that the other visuals changed accordingly.
+
+Additional bonus features were also implemented:
+
+- Report-page tooltip with Churn Rate, Total Customers, and Average Monthly Charges.
+- Matrix showing Churn Rate % by Contract and InternetService.
+- What-if parameter for Churn Reduction %.
+- A bonus card showing estimated Revenue Saved for the 0-12 month segment based on the selected churn reduction percentage.
+- Conditional formatting on the Contract churn-rate chart to highlight values above the overall churn rate.
 
 The report was created using Power BI Desktop on Windows.
 
@@ -71,6 +79,8 @@ A 100% churn rate in a group of only 3 customers should not automatically be tre
 
 Month-to-month contracts and fiber optic customers also show high churn rates and meaningful customer volumes, so they are considered important areas for further retention analysis.
 
+The matrix also shows that churn varies across combinations of Contract and InternetService. For example, month-to-month customers with fiber optic service have a 54.61% churn rate, while two-year customers with no internet service have a 0.78% churn rate.
+
 ## Retention Recommendations
 
 1. **Focus on early-stage customers:** Introduce an onboarding and early-retention program during the first 12 months, including regular check-ins, service guidance, and targeted offers before customers become more likely to churn.
@@ -85,4 +95,14 @@ Month-to-month contracts and fiber optic customers also show high churn rates an
 - DAX measures use `COUNTROWS`, `CALCULATE`, `AVERAGE`, `SUM`, and `DIVIDE`.
 - Churn rate is implemented as an explicit DAX measure rather than a calculated column.
 - The report uses Power BI Desktop on Windows.
-- The dashboard was designed as a single-page interactive report with KPI cards, churn-rate visuals, and slicers.
+- The main dashboard is supported by separate tooltip and bonus-analysis pages.
+- The report includes interactive slicers and cross-filtering between visuals.
+- The What-if parameter provides a simplified estimate of potential monthly revenue saved when a selected percentage of at-risk revenue is retained.
+
+## Deliverables
+
+- `churn_dashboard.pbix`
+- `churn_dashboard.png`
+- `churn_dashboard_month_to_month.png`
+- `churn_dashboard_matrix.png`
+- `note.md`
